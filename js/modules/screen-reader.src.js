@@ -624,7 +624,8 @@ H.Chart.prototype.addAccessibleContextMenuAttribs =    function () {
             if (item.tagName === 'DIV' &&
                 !(item.children && item.children.length)) {
                 item.setAttribute('role', 'menuitem');
-                item.setAttribute('tabindex', -1);
+                item.setAttribute('tabindex', 0);
+                item.setAttribute('aria-label', item.textContent);
             }
         });
         // Set accessibility properties on parent div
