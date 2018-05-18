@@ -1143,7 +1143,7 @@ H.Chart.prototype.addKeyboardNavigationModules = function () {
             init: function (direction) {
                 each(chart.legend.allItems, function (item) {
                     item.legendGroup.element.setAttribute('tabindex', '-1');
-                    item.legendGroup.element.setAttribute('role', 'button');
+                    item.legendGroup.element.setAttribute('role', 'checkbox');
                     item.legendGroup.element.setAttribute(
                         'aria-label',
                         chart.langFormat(

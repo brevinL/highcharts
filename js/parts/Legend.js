@@ -115,6 +115,8 @@ Highcharts.Legend.prototype = {
             'highcharts-legend-item-hidden'
         );
 
+        item.legendGroup.attr('aria-checked', visible);
+
         /*= if (build.classic) { =*/
         var legend = this,
             options = legend.options,
@@ -377,7 +379,9 @@ Highcharts.Legend.prototype = {
                     (itemClassName ? ' ' + itemClassName : '') +
                     (isSeries ? ' highcharts-series-' + item.index : '')
                 )
-                .attr({ zIndex: 1 })
+                .attr('zIndex', 1)
+                .attr('role', 'checkbox')
+                .attr('aria-checked', false)
                 .add(legend.scrollGroup);
 
             // Generate the list item text and add it to the group

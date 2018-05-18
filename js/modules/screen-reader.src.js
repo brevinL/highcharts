@@ -352,7 +352,7 @@ H.Series.prototype.setA11yDescription = function () {
                 'role',
                 this.options.exposeElementToA11y ? 'img' : 'region'
             );
-            seriesEl.setAttribute('tabindex', '-1');
+            seriesEl.setAttribute('tabindex', '0');
             seriesEl.setAttribute(
                 'aria-label',
                 stripTags(
@@ -620,13 +620,15 @@ H.Chart.prototype.addAccessibleContextMenuAttribs =    function () {
     if (exportList) {
         // Set tabindex on the menu items to allow focusing by script
         // Set role to give screen readers a chance to pick up the contents
-        each(exportList, function (item) {
-            if (item.tagName === 'DIV' &&
-                !(item.children && item.children.length)) {
-                item.setAttribute('role', 'menuitem');
-                item.setAttribute('tabindex', 0);
-                item.setAttribute('aria-label', item.textContent);
-            }
+        var e = exportList.filter(function (item) {
+            return item.tagName === 'DIV' &&
+                !(item.children && item.children.length);
+        });
+        each(e, function (item, index) {
+            item.setAttribute('role', 'menuitem');
+            item.setAttribute('tabindex', 0);
+            item.setAttribute('aria-label',
+                item.textContent + ' ' + (index + 1) + ' of ' + e.length);
         });
         // Set accessibility properties on parent div
         exportList[0].parentNode.setAttribute('role', 'menu');
@@ -720,6 +722,11 @@ H.Chart.prototype.callbacks.push(function (chart) {
             }
         ));
 
+    var chartLabel = 'Interactive chart. ' + chartTitle + '. ';
+    chartLabel += 'Use tab to nagviate among element set. ';
+    chartLabel += 'Use left and right arrows to navigate within element set. ';
+    chart.container.setAttribute('aria-label', chartLabel);
+
     // Add SVG title tag if it is set
     if (svgContainerTitle.length) {
         titleElement = doc.createElementNS(
@@ -729,6 +736,12 @@ H.Chart.prototype.callbacks.push(function (chart) {
         titleElement.textContent = svgContainerTitle;
         titleElement.id = titleId;
         descElement.parentNode.insertBefore(titleElement, descElement);
+
+        // Does not work in firefox or IE
+        titleElement.setAttribute('aria-hidden', true);
+        titleElement.setAttribute('style', 'display:none;visibility:hidden;');
+        descElement.setAttribute('aria-hidden', true);
+        descElement.setAttribute('style', 'display:none;visibility:hidden;');
     }
 
     chart.renderTo.setAttribute('role', 'region');
@@ -795,6 +808,7 @@ H.Chart.prototype.callbacks.push(function (chart) {
 
     // Hide text elements from screen readers
     each(textElements, function (el) {
+        el.setAttribute('tabindex', '-1');
         el.setAttribute('aria-hidden', 'true');
     });
 
